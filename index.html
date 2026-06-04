@@ -30,8 +30,8 @@ nav.scrolled{background:rgba(9,9,12,.92);backdrop-filter:blur(20px);border-botto
 .nav-links{display:flex;gap:28px;list-style:none;align-items:center}
 .nav-links a{color:var(--cream2);text-decoration:none;font-size:11px;letter-spacing:.14em;text-transform:uppercase;transition:color .3s;font-weight:400}
 .nav-links a:hover{color:var(--gold)}
-.nav-cta{border:1px solid rgba(201,164,98,.5)!important;color:var(--gold)!important;padding:8px 20px;transition:background .3s,color .3s!important}
-.nav-cta:hover{background:var(--gold)!important;color:var(--dark)!important}
+.nav-cta{background:var(--gold)!important;color:var(--dark)!important;padding:9px 22px;font-weight:700!important;transition:background .3s,transform .2s!important;letter-spacing:.12em!important}
+.nav-cta:hover{background:var(--gold2)!important;color:var(--dark)!important;transform:translateY(-1px)}
 .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px}
 .hamburger span{width:22px;height:1px;background:var(--cream);display:block}
 
@@ -388,6 +388,17 @@ footer{background:#050507;padding:84px 0 40px;border-top:1px solid rgba(201,164,
 /* ══════════ INTERACTIVE ADDITIONS ══════════ */
 
 /* Scroll progress bar */
+/* Floating Join Us bubble */
+.join-bubble{position:fixed;bottom:36px;left:36px;z-index:450;display:flex;flex-direction:column;align-items:flex-start;gap:5px;opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s;pointer-events:none}
+.join-bubble.show{opacity:1;transform:translateY(0);pointer-events:all}
+.join-bubble.pop{animation:bubblePop .6s cubic-bezier(.22,1,.36,1) forwards;pointer-events:all}
+.jb-label{font-size:9px;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;padding-left:4px;opacity:.8}
+.jb-btn{display:flex;align-items:center;gap:10px;background:var(--gold);color:var(--dark);text-decoration:none;padding:13px 22px;font-family:'Nunito Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;transition:all .3s;box-shadow:0 8px 32px rgba(201,164,98,.25)}
+.jb-btn:hover{background:var(--gold2);transform:translateY(-2px);box-shadow:0 14px 40px rgba(201,164,98,.4)}
+.jb-btn svg{width:13px;height:13px;flex-shrink:0;transition:transform .3s}
+.jb-btn:hover svg{transform:translateX(3px)}
+@keyframes bubblePop{0%{transform:scale(.8) translateY(16px);opacity:0}70%{transform:scale(1.06) translateY(-2px);opacity:1}100%{transform:scale(1) translateY(0);opacity:1}}
+@media(max-width:768px){.join-bubble{bottom:20px;left:20px}}
 #progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:600;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width .12s ease-out}
 
 /* Scroll-spy: highlight the nav link of the section in view */
@@ -468,7 +479,14 @@ footer{background:#050507;padding:84px 0 40px;border-top:1px solid rgba(201,164,
 </head>
 <body>
 
-<!-- SCROLL PROGRESS BAR -->
+<!-- FLOATING JOIN US BUBBLE -->
+<div class="join-bubble" id="joinBubble">
+  <span class="jb-label">New here?</span>
+  <a href="#register" class="jb-btn">
+    Join Us
+    <svg viewBox="0 0 14 14" fill="none"><path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </a>
+</div>
 <div id="progress"></div>
 
 <!-- LIGHTBOX (gallery viewer) -->
@@ -490,7 +508,7 @@ footer{background:#050507;padding:84px 0 40px;border-top:1px solid rgba(201,164,
   <a href="#gatherings" onclick="closeMob()">Gatherings</a>
   <a href="#community" onclick="closeMob()">Community</a>
   <a href="#gallery" onclick="closeMob()">Gallery</a>
-  <a href="#register" onclick="closeMob()">Join Us</a>
+  <a href="#register" onclick="closeMob()" style="color:var(--gold);border:1px solid rgba(201,164,98,.4);padding:12px 40px;margin-top:8px">Join Us →</a>
   <a href="#contact" onclick="closeMob()">Connect</a>
 </div>
 
@@ -509,7 +527,10 @@ footer{background:#050507;padding:84px 0 40px;border-top:1px solid rgba(201,164,
     <li><a href="#teachings">Teachings</a></li>
     <li><a href="#gatherings">Gatherings</a></li>
     <li><a href="#gallery">Gallery</a></li>
-    <li><a href="#register" class="nav-cta">Join Us</a></li>
+    <li style="display:flex;flex-direction:column;align-items:center;gap:3px">
+      <span style="font-size:8.5px;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;opacity:.75">New here?</span>
+      <a href="#register" class="nav-cta">Join Us →</a>
+    </li>
   </ul>
   <div class="hamburger" onclick="openMob()"><span></span><span></span><span></span></div>
 </nav>
@@ -533,6 +554,7 @@ footer{background:#050507;padding:84px 0 40px;border-top:1px solid rgba(201,164,
     <p class="hero-verse">"The harvest is plentiful, but the workers are few."<span class="hero-ref">— Matthew 9:37</span></p>
     <div class="hero-ctas">
       <a href="#gatherings" class="btn btn-fill">Find a Gathering</a>
+      <a href="#register" class="btn btn-fill" style="background:transparent;border:1px solid var(--gold);color:var(--gold)" onmouseover="this.style.background='var(--gold)';this.style.color='var(--dark)'" onmouseout="this.style.background='transparent';this.style.color='var(--gold)'">Join Us →</a>
       <a href="#about" class="btn btn-ghost">Our Story</a>
     </div>
   </div>
@@ -1085,13 +1107,29 @@ function togVal(el){document.querySelectorAll('.val').forEach(v=>v.classList.rem
 /* ─── Scroll progress bar + scroll-spy nav ─── */
 const navEl=document.getElementById('nav');
 const progress=document.getElementById('progress');
+const joinBubble=document.getElementById('joinBubble');
+const registerSection=document.getElementById('register');
 const navLinks=[...document.querySelectorAll('.nav-links a[href^="#"]')];
 const spySections=navLinks.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+
+// Pop the bubble in after a short delay on page load
+setTimeout(()=>{
+  joinBubble.classList.remove('show');
+  joinBubble.classList.add('pop');
+  joinBubble.addEventListener('animationend',()=>joinBubble.classList.add('show'),{once:true});
+},2400);
+
 function onScroll(){
   const y=window.scrollY;
   navEl.classList.toggle('scrolled',y>60);
   const max=document.documentElement.scrollHeight-window.innerHeight;
   progress.style.width=(max>0?(y/max)*100:0)+'%';
+  // Hide bubble once user reaches the register section
+  if(registerSection){
+    const rTop=registerSection.getBoundingClientRect().top;
+    joinBubble.style.opacity=rTop<window.innerHeight*0.6?'0':'';
+    joinBubble.style.pointerEvents=rTop<window.innerHeight*0.6?'none':'';
+  }
   let current=spySections[0];
   for(const s of spySections){if(s.getBoundingClientRect().top<=130)current=s;}
   navLinks.forEach(a=>a.classList.toggle('active',current&&a.getAttribute('href')==='#'+current.id));
