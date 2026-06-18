@@ -5,6 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Servants of Christ — Jakarta & Bekasi</title>
 <meta name="description" content="A non-denominational Christian community in Jakarta and Bekasi. Different backgrounds, different churches. But one Saviour and one source of truth.">
+<!-- Open Graph / WhatsApp preview -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kevaanelka.github.io/Servants_of_Christ">
+<meta property="og:title" content="Servants of Christ — Jakarta & Bekasi">
+<meta property="og:description" content="A non-denominational Christian community gathering in Jakarta and Bekasi. Different backgrounds, different churches. One Saviour, one source of truth.">
+<meta property="og:image" content="https://drive.google.com/thumbnail?id=12fRT4cSDpaIRJNoYqipms56cgUFa-QQY&sz=w1200">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Servants of Christ — Jakarta & Bekasi">
+<meta name="twitter:image" content="https://drive.google.com/thumbnail?id=12fRT4cSDpaIRJNoYqipms56cgUFa-QQY&sz=w1200">
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#c9a462">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Servants of Christ">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Nunito+Sans:wght@200;300;400;600&display=swap" rel="stylesheet">
@@ -467,16 +484,58 @@ footer{background:#050507;padding:84px 0 40px;border-top:1px solid rgba(201,164,
 .reg-cta-eyebrow{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:14px}
 .reg-cta-title{font-family:'Cormorant Garamond',serif;font-size:clamp(30px,3.4vw,42px);font-weight:400;color:var(--cream);line-height:1.1;margin-bottom:18px}
 .reg-cta-text{font-size:15px;color:var(--cream2);line-height:1.8;margin-bottom:26px}
-.reg-cta-text strong{color:var(--cream);font-weight:600}
-.reg-cta-list{list-style:none;display:flex;flex-direction:column;gap:0;margin-bottom:34px}
-.reg-cta-list li{font-size:13.5px;letter-spacing:.04em;color:var(--cream);padding:13px 0;border-bottom:1px solid rgba(201,164,98,.12);position:relative;padding-left:22px}
-.reg-cta-list li:last-child{border-bottom:none}
-.reg-cta-list li::before{content:'✦';position:absolute;left:0;color:var(--gold);font-size:11px}
-.reg-cta-btn{display:inline-block;background:var(--gold);color:var(--dark);text-decoration:none;font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;padding:18px 46px;transition:all .3s}
-.reg-cta-btn:hover{background:var(--gold2);transform:translateY(-2px)}
-.reg-cta-sub{font-size:11.5px;color:var(--cream2);margin-top:16px;letter-spacing:.02em}
-</style>
-</head>
+/* Next gathering banner */
+.ng-bar{background:rgba(201,164,98,.08);border-bottom:1px solid rgba(201,164,98,.18);padding:9px 52px;display:flex;align-items:center;justify-content:space-between;gap:16px;position:fixed;top:74px;left:0;right:0;z-index:490;backdrop-filter:blur(12px);transition:opacity .4s,transform .4s}
+.ng-bar.hide{opacity:0;pointer-events:none;transform:translateY(-8px)}
+.ng-left{display:flex;align-items:center;gap:12px}
+.ng-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:ngPulse 2s ease-in-out infinite;flex-shrink:0}
+@keyframes ngPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.75)}}
+.ng-label{font-size:9px;letter-spacing:.24em;color:var(--gold);text-transform:uppercase}
+.ng-text{font-size:12.5px;color:var(--cream);letter-spacing:.04em}
+.ng-text strong{color:var(--gold);font-weight:600}
+.ng-link{font-size:10.5px;letter-spacing:.14em;color:var(--cream2);text-decoration:none;text-transform:uppercase;border-bottom:1px solid rgba(201,164,98,.3);padding-bottom:1px;transition:color .3s,border-color .3s;flex-shrink:0}
+.ng-link:hover{color:var(--gold);border-color:var(--gold)}
+.ng-close{background:none;border:none;color:var(--cream2);cursor:pointer;font-size:14px;padding:4px;flex-shrink:0;transition:color .3s}
+.ng-close:hover{color:var(--gold)}
+@media(max-width:768px){.ng-bar{padding:8px 20px;top:var(--nav-h)}.ng-label{display:none}}
+
+/* Verse of the day */
+.votd{background:linear-gradient(135deg,rgba(201,164,98,.07) 0%,rgba(201,164,98,.02) 100%);border:1px solid rgba(201,164,98,.2);padding:40px 52px;margin-bottom:60px;position:relative;overflow:hidden}
+.votd::before{content:'"';font-family:'Cormorant Garamond',serif;font-size:200px;color:rgba(201,164,98,.06);position:absolute;top:-40px;left:20px;line-height:1;pointer-events:none}
+.votd-label{font-size:9px;letter-spacing:.3em;color:var(--gold);text-transform:uppercase;display:block;margin-bottom:16px}
+.votd-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(20px,2.6vw,28px);color:var(--cream);line-height:1.55;position:relative;z-index:1;margin-bottom:14px}
+.votd-ref{font-size:11px;letter-spacing:.18em;color:var(--gold);text-transform:uppercase}
+
+/* Testimonies */
+.testi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:3px;margin-top:72px}
+.tcard{background:var(--dark2);padding:44px 40px;position:relative;overflow:hidden;transition:background .35s}
+.tcard:hover{background:var(--dark3)}
+.tcard-q{font-family:'Cormorant Garamond',serif;font-size:clamp(17px,2vw,22px);font-style:italic;color:var(--cream);line-height:1.65;margin-bottom:28px;padding-left:20px;border-left:2px solid rgba(201,164,98,.4)}
+.tcard-q::before{content:'"';font-size:60px;color:rgba(201,164,98,.1);font-family:'Cormorant Garamond',serif;position:absolute;top:30px;left:14px;line-height:1}
+.tcard-who{display:flex;align-items:center;gap:12px}
+.tcard-avatar{width:38px;height:38px;border-radius:50%;background:rgba(201,164,98,.15);border:1px solid rgba(201,164,98,.3);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--gold);font-weight:500;flex-shrink:0}
+.tcard-name{font-size:13px;font-weight:600;color:var(--cream);display:block}
+.tcard-city{font-size:10.5px;letter-spacing:.14em;color:var(--gold);text-transform:uppercase}
+@media(max-width:768px){.testi-grid{grid-template-columns:1fr}}
+
+/* Prayer wall */
+.pw-layout{display:grid;grid-template-columns:1fr 1.1fr;gap:64px;margin-top:72px;align-items:start}
+.pw-cards{display:flex;flex-direction:column;gap:3px}
+.pw-card{background:var(--dark2);padding:22px 24px;border-left:2px solid rgba(201,164,98,.28);transition:border-color .3s}
+.pw-card:hover{border-left-color:var(--gold)}
+.pw-card-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--cream);line-height:1.65;margin-bottom:8px}
+.pw-card-meta{font-size:10.5px;color:var(--gold);letter-spacing:.12em;text-transform:uppercase}
+.pw-form{background:var(--dark2);padding:40px 36px}
+.pw-field{display:flex;flex-direction:column;gap:7px;margin-bottom:18px}
+.pw-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--cream2)}
+.pw-input,.pw-textarea{background:var(--dark3);border:1px solid rgba(255,255,255,.07);color:var(--cream);padding:12px 16px;font-family:'Nunito Sans',sans-serif;font-size:13.5px;font-weight:300;outline:none;transition:border-color .3s;width:100%}
+.pw-input:focus,.pw-textarea:focus{border-color:var(--gold)}
+.pw-textarea{resize:vertical;min-height:100px}
+.pw-submit{background:var(--gold);color:var(--dark);border:none;padding:14px 36px;font-family:'Nunito Sans',sans-serif;font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;cursor:pointer;transition:all .3s;margin-top:4px}
+.pw-submit:hover{background:var(--gold2);transform:translateY(-1px)}
+.pw-success{display:none;padding:20px;background:rgba(201,164,98,.08);border:1px solid rgba(201,164,98,.2);text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:var(--cream);animation:fadeUp .5s ease}
+@media(max-width:1024px){.pw-layout{grid-template-columns:1fr}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 <body>
 
 <!-- FLOATING JOIN US BUBBLE -->
@@ -488,6 +547,19 @@ footer{background:#050507;padding:84px 0 40px;border-top:1px solid rgba(201,164,
   </a>
 </div>
 <div id="progress"></div>
+
+<!-- NEXT GATHERING BANNER -->
+<div class="ng-bar" id="ngBar">
+  <div class="ng-left">
+    <span class="ng-dot"></span>
+    <span class="ng-label">Next Gathering</span>
+    <span class="ng-text" id="ngText"></span>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px">
+    <a href="#gatherings" class="ng-link" onclick="document.getElementById('ngBar').classList.add('hide')">Details →</a>
+    <button class="ng-close" onclick="document.getElementById('ngBar').classList.add('hide')" title="Dismiss">✕</button>
+  </div>
+</div>
 
 <!-- LIGHTBOX (gallery viewer) -->
 <div class="lb" id="lb" aria-hidden="true">
@@ -599,6 +671,11 @@ footer{background:#050507;padding:84px 0 40px;border-top:1px solid rgba(201,164,
   <div class="inner">
     <span class="tag reveal">Our Foundation</span>
     <h2 class="h2 reveal d1">The words we<br>are built <em>upon</em></h2>
+    <div class="votd reveal d2">
+      <span class="votd-label">✦ Today's Verse</span>
+      <p class="votd-text" id="votdText"></p>
+      <span class="votd-ref" id="votdRef"></span>
+    </div>
     <div class="verse-cards">
       <div class="vcard reveal d2">
         <span class="vcard-n">01</span>
@@ -828,6 +905,44 @@ footer{background:#050507;padding:84px 0 40px;border-top:1px solid rgba(201,164,
   </div>
 </section>
 
+<!-- TESTIMONIES -->
+<section id="testimonies" style="padding:140px 0;background:var(--dark3)">
+  <div class="inner">
+    <span class="tag reveal">Community Voices</span>
+    <h2 class="h2 reveal d1">In their own <em>words</em></h2>
+    <div class="testi-grid">
+      <div class="tcard reveal d1">
+        <p class="tcard-q">Awalnya saya pikir ini komunitas biasa. Tapi ternyata ini yang saya cari lama banget — Firman yang real, orang-orang yang tulus, dan tidak ada performance.</p>
+        <div class="tcard-who">
+          <div class="tcard-avatar">KR</div>
+          <div><span class="tcard-name">Karina</span><span class="tcard-city">Jakarta</span></div>
+        </div>
+      </div>
+      <div class="tcard reveal d2">
+        <p class="tcard-q">The Spiritual Warfare series changed how I approach every single day. I didn't realise how much of life is fought in the spiritual realm until we studied Ephesians 6 together.</p>
+        <div class="tcard-who">
+          <div class="tcard-avatar">DW</div>
+          <div><span class="tcard-name">David</span><span class="tcard-city">Bekasi</span></div>
+        </div>
+      </div>
+      <div class="tcard reveal d2">
+        <p class="tcard-q">Buat saya yang pindah ke Jakarta sendirian, nemu komunitas ini tuh jawaban doa banget. Dari hari pertama langsung kerasa welcomed dan diterima apa adanya.</p>
+        <div class="tcard-who">
+          <div class="tcard-avatar">RS</div>
+          <div><span class="tcard-name">Risa</span><span class="tcard-city">Jakarta</span></div>
+        </div>
+      </div>
+      <div class="tcard reveal d3">
+        <p class="tcard-q">What struck me most is the consistency. Every gathering you leave with something that actually applies to your week — not just inspiration, but real truth you can act on.</p>
+        <div class="tcard-who">
+          <div class="tcard-avatar">JT</div>
+          <div><span class="tcard-name">Jonathan</span><span class="tcard-city">Bekasi</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- GALLERY -->
 <section id="gallery">
   <div class="inner">
@@ -1005,6 +1120,42 @@ footer{background:#050507;padding:84px 0 40px;border-top:1px solid rgba(201,164,
   </div>
 </section>
 
+<!-- PRAYER WALL -->
+<section id="prayer" style="padding:140px 0;background:var(--dark3)">
+  <div class="inner">
+    <span class="tag reveal">Prayer Wall</span>
+    <h2 class="h2 reveal d1">Lift it up <em>together</em></h2>
+    <p class="reveal d2" style="font-size:16px;color:var(--cream2);line-height:1.85;margin-top:20px;max-width:560px">"Pray in the Spirit on all occasions with all kinds of prayers and requests." — Ephesians 6:18</p>
+    <div class="pw-layout">
+      <div>
+        <p style="font-size:10px;letter-spacing:.24em;color:var(--gold);text-transform:uppercase;margin-bottom:20px">Recent prayers</p>
+        <div class="pw-cards" id="pwCards">
+          <div class="pw-card"><p class="pw-card-text">Lord, guide our community to grow in faith and in love for one another.</p><span class="pw-card-meta">Community · Jakarta</span></div>
+          <div class="pw-card"><p class="pw-card-text">For the families and elders we visited at Rumah Kavel — may they know Your peace.</p><span class="pw-card-meta">Outreach · Bekasi</span></div>
+          <div class="pw-card"><p class="pw-card-text">For those still searching — may they find their way to the community and to You.</p><span class="pw-card-meta">Newcomers</span></div>
+          <div class="pw-card"><p class="pw-card-text">Pray for the workers in the harvest — that God would raise up more labourers.</p><span class="pw-card-meta">Matthew 9:37</span></div>
+        </div>
+      </div>
+      <div class="pw-form" id="pwForm">
+        <p style="font-size:10px;letter-spacing:.24em;color:var(--gold);text-transform:uppercase;margin-bottom:24px">Share a prayer request</p>
+        <div class="pw-field">
+          <label class="pw-label">Your name (optional)</label>
+          <input class="pw-input" id="pwName" type="text" placeholder="Anonymous is okay">
+        </div>
+        <div class="pw-field">
+          <label class="pw-label">Your prayer request</label>
+          <textarea class="pw-textarea" id="pwRequest" placeholder="What would you like the community to pray for?"></textarea>
+        </div>
+        <button class="pw-submit" onclick="submitPrayer()">Submit Prayer →</button>
+      </div>
+      <div class="pw-success" id="pwSuccess">
+        <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:20px;color:var(--cream);margin-bottom:8px">"Pray in the Spirit on all occasions…"</p>
+        <p style="font-size:13px;color:var(--cream2)">Your prayer has been received. The community will hold it in prayer. 🙏</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- CONTACT -->
 <section id="contact">
   <div class="inner">
@@ -1022,6 +1173,13 @@ footer{background:#050507;padding:84px 0 40px;border-top:1px solid rgba(201,164,
         <span class="ccard-lbl">Threads</span>
         <h3 class="ccard-title">@servants.of_christ</h3>
         <p class="ccard-det">Join the conversation — faith, life, and community on Threads.</p>
+      </a>
+      <a href="mailto:servants.of.christ11@gmail.com" class="ccard reveal d1">
+        <div class="ccard-ico">💬</div>
+        <span class="ccard-lbl">WhatsApp Community</span>
+        <h3 class="ccard-title">Join the Group</h3>
+        <p class="ccard-det">Connect directly with the community — gatherings, updates, and fellowship in between meetings.</p>
+        <p style="font-size:11px;color:var(--gold);margin-top:12px;letter-spacing:.1em">📲 Message us to get the invite link →</p>
       </a>
       <a href="https://www.google.com/maps/place/?q=place_id:ChIJi4ds2xbxaS4R3oC_O8P7-tc" target="_blank" class="ccard reveal d2">
         <div class="ccard-ico">📍</div>
@@ -1360,6 +1518,72 @@ document.addEventListener('keydown',e=>{
   if(e.key==='ArrowRight')smStep(1);
   if(e.key==='ArrowLeft')smStep(-1);
 });
+
+
+/* ── NEXT GATHERING CONFIG (update this each week) ── */
+const NEXT_GATHERING = {
+  date: 'Sat, 21 Jun 2026',
+  city: 'Jakarta',
+  venue: 'Eunoia, Permata Hijau',
+};
+(function(){
+  const t = document.getElementById('ngText');
+  if(t) t.innerHTML = `<strong>${NEXT_GATHERING.date}</strong> &nbsp;·&nbsp; ${NEXT_GATHERING.city} &nbsp;·&nbsp; ${NEXT_GATHERING.venue}`;
+})();
+
+/* ── VERSE OF THE DAY ── */
+const VERSES = [
+  {t:'"The harvest is plentiful, but the workers are few."',r:'Matthew 9:37'},
+  {t:'"Am I now trying to win the approval of human beings, or of God?"',r:'Galatians 1:10'},
+  {t:'"Everyone has sinned; we all fall short of God\'s glorious standard. Yet God freely makes us right in his sight."',r:'Romans 3:23–24 NLT'},
+  {t:'"I praise you because I am fearfully and wonderfully made."',r:'Psalm 139:14'},
+  {t:'"The Lord is my shepherd, I lack nothing."',r:'Psalm 23:1'},
+  {t:'"Put on all of God\'s armor so that you will be able to stand firm against all strategies of the devil."',r:'Ephesians 6:11 NLT'},
+  {t:'"So the wall was completed... they realized that this work had been done with the help of our God."',r:'Nehemiah 6:15–16'},
+  {t:'"God demonstrates his own love for us in this: While we were still sinners, Christ died for us."',r:'Romans 5:8'},
+  {t:'"All authority in heaven and on earth has been given to me. Therefore go and make disciples."',r:'Matthew 28:18–19'},
+  {t:'"This same Jesus, who has been taken from you into heaven, will come back in the same way."',r:'Acts 1:11'},
+  {t:'"Love one another. As I have loved you, so you must love one another."',r:'John 13:34'},
+  {t:'"He sent his one and only Son into the world that we might live through him."',r:'1 John 4:9'},
+  {t:'"For it is by grace you have been saved, through faith — and this is not from yourselves, it is the gift of God."',r:'Ephesians 2:8'},
+  {t:'"Since we have been made right in God\'s sight by faith, we have peace with God."',r:'Romans 5:1 NLT'},
+  {t:'"The Advocate, the Holy Spirit, whom the Father will send in my name, will teach you all things."',r:'John 14:26'},
+  {t:'"You are the light of the world. A town built on a hill cannot be hidden."',r:'Matthew 5:14'},
+  {t:'"Come to me, all you who are weary and burdened, and I will give you rest."',r:'Matthew 11:28'},
+  {t:'"My Father\'s house has many rooms... I am going there to prepare a place for you."',r:'John 14:2'},
+  {t:'"Before I formed you in the womb I knew you, before you were born I set you apart."',r:'Jeremiah 1:5'},
+  {t:'"Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you."',r:'Joshua 1:9'},
+];
+(function(){
+  const doy = Math.floor((new Date() - new Date(new Date().getFullYear(),0,0))/86400000);
+  const v = VERSES[doy % VERSES.length];
+  const vt = document.getElementById('votdText');
+  const vr = document.getElementById('votdRef');
+  if(vt) vt.textContent = v.t;
+  if(vr) vr.textContent = '— ' + v.r;
+})();
+
+/* ── PRAYER WALL ── */
+function submitPrayer(){
+  const name = document.getElementById('pwName').value.trim() || 'Anonymous';
+  const req  = document.getElementById('pwRequest').value.trim();
+  if(!req){alert('Please share your prayer request.');return;}
+  const cards = document.getElementById('pwCards');
+  const card = document.createElement('div');
+  card.className = 'pw-card';
+  card.style.animation = 'fadeUp .5s ease';
+  card.innerHTML = `<p class="pw-card-text">${req}</p><span class="pw-card-meta">${name}</span>`;
+  cards.insertBefore(card, cards.firstChild);
+  document.getElementById('pwForm').style.display='none';
+  document.getElementById('pwSuccess').style.display='block';
+}
+
+/* ── PWA SERVICE WORKER ── */
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
 
 initGatherings();
 </script>

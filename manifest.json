@@ -1,0 +1,25 @@
+{
+  "name": "Servants of Christ",
+  "short_name": "SoC",
+  "description": "A non-denominational Christian community in Jakarta and Bekasi.",
+  "start_url": "/Servants_of_Christ/",
+  "scope": "/Servants_of_Christ/",
+  "display": "standalone",
+  "background_color": "#09090c",
+  "theme_color": "#c9a462",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://drive.google.com/thumbnail?id=12fRT4cSDpaIRJNoYqipms56cgUFa-QQY&sz=w192",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "https://drive.google.com/thumbnail?id=12fRT4cSDpaIRJNoYqipms56cgUFa-QQY&sz=w512",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ],
+  "categories": ["lifestyle", "social"],
+  "lang": "id"
+}
