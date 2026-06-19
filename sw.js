@@ -33,3 +33,19 @@ self.addEventListener('fetch', e => {
     })
   );
 });
+
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  e.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(windowClients => {
+      for (const client of windowClients) {
+        if (client.url.includes('Servants_of_Christ') && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow('/Servants_of_Christ/');
+      }
+    })
+  );
+});
