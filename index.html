@@ -590,7 +590,7 @@ footer{background:#050507;padding:84px 0 40px;border-top:1px solid rgba(201,164,
 </div>
 
 <!-- AMBIENT AUDIO TOGGLE -->
-<button class="audio-toggle" id="audioToggle" onclick="toggleAmbient()" title="Ambient worship sound">
+<button class="audio-toggle" id="audioToggle" onclick="toggleAmbient()" title="Play a little tune">
   <div class="bars"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
 </button>
 
@@ -1595,76 +1595,62 @@ function submitPrayer(){
   document.getElementById('pwSuccess').style.display='block';
 }
 
-/* ── AMBIENT WORSHIP AUDIO ──
-   An original generative instrumental — NOT a recreation of any existing song.
-   Uses the classic I–V–vi–IV worship progression (D–A–Bm–G), a chord progression
-   that itself isn't copyrightable, with an original arpeggiated melody on top. */
-let actx=null, ambientOn=false;
-let padOscs=[], masterGain=null, delayNode=null, feedbackGain=null, wetGain=null;
-let chordIdx=0, chordInterval=null;
-const CHORDS=[
-  {pad:[146.83,185.00,220.00,293.66], melody:[293.66,369.99,440.00,587.33,440.00,369.99]},
-  {pad:[110.00,164.81,220.00,277.18], melody:[220.00,277.18,329.63,440.00,329.63,277.18]},
-  {pad:[123.47,146.83,185.00,246.94], melody:[246.94,293.66,369.99,493.88,369.99,293.66]},
-  {pad:[98.00,123.47,146.83,196.00],  melody:[196.00,246.94,293.66,392.00,293.66,246.94]}
-];
-const CHORD_DUR=7400;
+/* ── PLAYFUL AMBIENT MELODY ──
+   A bright, original music-box style tune — bouncy timing, major pentatonic
+   scale (which has no dissonant intervals at all, so it can never sound eerie),
+   and a light "sparkle" octave layer for a fun, cheerful feel. */
+let actx=null, ambientOn=false, masterGain=null, melodyTimer=null;
+let noteIdx=4; // start mid-scale
+const SCALE=[261.63,293.66,329.63,392.00,440.00,523.25,587.33,659.25,783.99]; // C major pentatonic, two octaves
 
 function buildAmbientEngine(){
   actx = new (window.AudioContext||window.webkitAudioContext)();
   masterGain = actx.createGain();
   masterGain.gain.value = 0;
   masterGain.connect(actx.destination);
-  // Gentle cathedral-like delay/ambience
-  delayNode = actx.createDelay(2.0);
-  delayNode.delayTime.value = 0.46;
-  feedbackGain = actx.createGain();
-  feedbackGain.gain.value = 0.3;
-  wetGain = actx.createGain();
-  wetGain.gain.value = 0.45;
-  masterGain.connect(delayNode);
-  delayNode.connect(feedbackGain);
-  feedbackGain.connect(delayNode);
-  delayNode.connect(wetGain);
-  wetGain.connect(actx.destination);
-  // Sustained pad voices — glide smoothly between chord tones
-  CHORDS[0].pad.forEach((f,i)=>{
-    const osc=actx.createOscillator();
-    osc.type = i%2===0?'sine':'triangle';
-    osc.frequency.value=f;
-    const g=actx.createGain();
-    g.gain.value=0.055-i*0.007;
-    const panner=actx.createStereoPanner?actx.createStereoPanner():null;
-    if(panner){panner.pan.value=(i%2===0?-1:1)*0.35; osc.connect(g); g.connect(panner); panner.connect(masterGain);}
-    else{osc.connect(g); g.connect(masterGain);}
-    osc.start();
-    padOscs.push(osc);
-  });
+  // tiny, short slap-delay for sparkle — no long eerie feedback trail
+  const delay = actx.createDelay(0.4);
+  delay.delayTime.value = 0.16;
+  const delayGain = actx.createGain();
+  delayGain.gain.value = 0.16;
+  masterGain.connect(delay);
+  delay.connect(delayGain);
+  delayGain.connect(actx.destination);
 }
-function advanceChord(){
-  chordIdx=(chordIdx+1)%CHORDS.length;
-  const chord=CHORDS[chordIdx];
-  padOscs.forEach((osc,i)=>{
-    osc.frequency.cancelScheduledValues(actx.currentTime);
-    osc.frequency.setValueAtTime(osc.frequency.value, actx.currentTime);
-    osc.frequency.linearRampToValueAtTime(chord.pad[i], actx.currentTime+3.4);
-  });
-}
-function playPluck(freq,time){
+function playNote(freq,time,dur,vol){
   const osc=actx.createOscillator();
   osc.type='triangle';
   osc.frequency.value=freq;
   const g=actx.createGain();
   g.gain.setValueAtTime(0,time);
-  g.gain.linearRampToValueAtTime(0.085,time+0.05);
-  g.gain.exponentialRampToValueAtTime(0.0001,time+2.6);
+  g.gain.linearRampToValueAtTime(vol,time+0.012);
+  g.gain.exponentialRampToValueAtTime(0.0001,time+dur);
   osc.connect(g); g.connect(masterGain);
-  osc.start(time); osc.stop(time+2.7);
+  osc.start(time); osc.stop(time+dur+0.05);
+  // occasional bright sparkle layer, an octave up
+  if(Math.random()<0.3){
+    const osc2=actx.createOscillator();
+    osc2.type='sine';
+    osc2.frequency.value=freq*2;
+    const g2=actx.createGain();
+    g2.gain.setValueAtTime(0,time);
+    g2.gain.linearRampToValueAtTime(vol*0.4,time+0.01);
+    g2.gain.exponentialRampToValueAtTime(0.0001,time+dur*0.55);
+    osc2.connect(g2); g2.connect(masterGain);
+    osc2.start(time); osc2.stop(time+dur*0.55+0.05);
+  }
 }
-function scheduleMelody(){
-  const chord=CHORDS[chordIdx];
-  const gap=(CHORD_DUR/1000)/chord.melody.length;
-  chord.melody.forEach((f,i)=>playPluck(f, actx.currentTime + i*gap + 0.3));
+function scheduleNextNote(){
+  if(!ambientOn) return;
+  // gentle random walk through the scale — always musically pleasant, never harsh
+  const step=Math.floor(Math.random()*3)-1; // -1, 0, or +1
+  noteIdx=Math.max(0,Math.min(SCALE.length-1, noteIdx+step));
+  const freq=SCALE[noteIdx];
+  const dur=0.5+Math.random()*0.3;
+  const vol=0.09+Math.random()*0.025;
+  playNote(freq, actx.currentTime+0.02, dur, vol);
+  const gap=270+Math.random()*150; // bouncy, slightly varied timing — a playful skip
+  melodyTimer=setTimeout(scheduleNextNote, gap);
 }
 function toggleAmbient(){
   const btn=document.getElementById('audioToggle');
@@ -1672,19 +1658,18 @@ function toggleAmbient(){
     if(!actx) buildAmbientEngine();
     if(actx.state==='suspended') actx.resume();
     masterGain.gain.cancelScheduledValues(actx.currentTime);
-    masterGain.gain.linearRampToValueAtTime(0.55, actx.currentTime+2.4);
+    masterGain.gain.linearRampToValueAtTime(1, actx.currentTime+0.8);
     ambientOn=true;
     btn.classList.add('on');
     localStorage.setItem('soc-ambient','on');
-    scheduleMelody();
-    chordInterval=setInterval(()=>{advanceChord();scheduleMelody();},CHORD_DUR);
+    scheduleNextNote();
   } else {
     masterGain.gain.cancelScheduledValues(actx.currentTime);
-    masterGain.gain.linearRampToValueAtTime(0, actx.currentTime+1.4);
+    masterGain.gain.linearRampToValueAtTime(0, actx.currentTime+0.6);
     ambientOn=false;
     btn.classList.remove('on');
     localStorage.setItem('soc-ambient','off');
-    clearInterval(chordInterval);
+    clearTimeout(melodyTimer);
   }
 }
 // Restore preference (browsers block autoplay until first interaction, so we wait for a tap anywhere)
