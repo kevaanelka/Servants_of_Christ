@@ -912,33 +912,9 @@ footer{background:#050507;padding:84px 0 40px;border-top:1px solid rgba(201,164,
     <span class="tag reveal">Community Voices</span>
     <h2 class="h2 reveal d1">In their own <em>words</em></h2>
     <div class="testi-grid">
-      <div class="tcard reveal d1">
-        <p class="tcard-q">Awalnya saya pikir ini komunitas biasa. Tapi ternyata ini yang saya cari lama banget — Firman yang real, orang-orang yang tulus, dan tidak ada performance.</p>
-        <div class="tcard-who">
-          <div class="tcard-avatar">KR</div>
-          <div><span class="tcard-name">Karina</span><span class="tcard-city">Jakarta</span></div>
-        </div>
-      </div>
-      <div class="tcard reveal d2">
-        <p class="tcard-q">The Spiritual Warfare series changed how I approach every single day. I didn't realise how much of life is fought in the spiritual realm until we studied Ephesians 6 together.</p>
-        <div class="tcard-who">
-          <div class="tcard-avatar">DW</div>
-          <div><span class="tcard-name">David</span><span class="tcard-city">Bekasi</span></div>
-        </div>
-      </div>
-      <div class="tcard reveal d2">
-        <p class="tcard-q">Buat saya yang pindah ke Jakarta sendirian, nemu komunitas ini tuh jawaban doa banget. Dari hari pertama langsung kerasa welcomed dan diterima apa adanya.</p>
-        <div class="tcard-who">
-          <div class="tcard-avatar">RS</div>
-          <div><span class="tcard-name">Risa</span><span class="tcard-city">Jakarta</span></div>
-        </div>
-      </div>
-      <div class="tcard reveal d3">
-        <p class="tcard-q">What struck me most is the consistency. Every gathering you leave with something that actually applies to your week — not just inspiration, but real truth you can act on.</p>
-        <div class="tcard-who">
-          <div class="tcard-avatar">JT</div>
-          <div><span class="tcard-name">Jonathan</span><span class="tcard-city">Bekasi</span></div>
-        </div>
+      <div style="grid-column:1/-1;padding:60px 40px;background:var(--dark2);text-align:center;border:1px dashed rgba(201,164,98,.2)">
+        <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:22px;color:var(--cream2);margin-bottom:12px">"Your story matters."</p>
+        <p style="font-size:13px;color:var(--cream2);line-height:1.8">Community voices coming soon — as people share what God has been doing, their words will appear here.</p>
       </div>
     </div>
   </div>
@@ -1131,10 +1107,7 @@ footer{background:#050507;padding:84px 0 40px;border-top:1px solid rgba(201,164,
       <div>
         <p style="font-size:10px;letter-spacing:.24em;color:var(--gold);text-transform:uppercase;margin-bottom:20px">Recent prayers</p>
         <div class="pw-cards" id="pwCards">
-          <div class="pw-card"><p class="pw-card-text">Lord, guide our community to grow in faith and in love for one another.</p><span class="pw-card-meta">Community · Jakarta</span></div>
-          <div class="pw-card"><p class="pw-card-text">For the families and elders we visited at Rumah Kavel — may they know Your peace.</p><span class="pw-card-meta">Outreach · Bekasi</span></div>
-          <div class="pw-card"><p class="pw-card-text">For those still searching — may they find their way to the community and to You.</p><span class="pw-card-meta">Newcomers</span></div>
-          <div class="pw-card"><p class="pw-card-text">Pray for the workers in the harvest — that God would raise up more labourers.</p><span class="pw-card-meta">Matthew 9:37</span></div>
+          <p style="font-size:13px;color:var(--cream2);font-style:italic;padding:20px 0;opacity:.6">Prayers submitted by the community will appear here.</p>
         </div>
       </div>
       <div class="pw-form" id="pwForm">
@@ -1570,6 +1543,8 @@ function submitPrayer(){
   const req  = document.getElementById('pwRequest').value.trim();
   if(!req){alert('Please share your prayer request.');return;}
   const cards = document.getElementById('pwCards');
+  const placeholder = cards.querySelector('p');
+  if(placeholder) placeholder.remove();
   const card = document.createElement('div');
   card.className = 'pw-card';
   card.style.animation = 'fadeUp .5s ease';
