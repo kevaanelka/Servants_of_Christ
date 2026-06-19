@@ -1,7 +1,11 @@
-const CACHE = 'soc-v1';
+const CACHE = 'soc-v2';
 const ASSETS = [
   '/Servants_of_Christ/',
   '/Servants_of_Christ/index.html',
+  '/Servants_of_Christ/audio/note-a3.mp3',
+  '/Servants_of_Christ/audio/note-c4.mp3',
+  '/Servants_of_Christ/audio/note-d4.mp3',
+  '/Servants_of_Christ/audio/note-e4.mp3',
 ];
 
 self.addEventListener('install', e => {

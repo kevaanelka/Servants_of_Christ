@@ -1,0 +1,12 @@
+Ambient audio samples
+======================
+
+Source: "Music Jingles" pack by Kenney Vleugels (www.kenney.nl)
+License: CC0 1.0 Universal (Public Domain Dedication)
+https://creativecommons.org/publicdomain/zero/1.0/
+
+Four individual plucked-string ("pizzicato") notes were selected from
+the pack (A3, C4, D4, E4 — an A minor pentatonic fragment) and are
+played back in a randomized sequence to create an original ambient
+melody for the website. No attribution is legally required under CC0,
+but it's credited here as good practice.

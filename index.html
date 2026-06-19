@@ -590,7 +590,7 @@ footer{background:#050507;padding:84px 0 40px;border-top:1px solid rgba(201,164,
 </div>
 
 <!-- AMBIENT AUDIO TOGGLE -->
-<button class="audio-toggle" id="audioToggle" onclick="toggleAmbient()" title="Play a little tune">
+<button class="audio-toggle" id="audioToggle" onclick="toggleAmbient()" title="Play a cheerful tune">
   <div class="bars"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
 </button>
 
@@ -1596,12 +1596,15 @@ function submitPrayer(){
 }
 
 /* ── PLAYFUL AMBIENT MELODY ──
-   A bright, original music-box style tune — bouncy timing, major pentatonic
-   scale (which has no dissonant intervals at all, so it can never sound eerie),
-   and a light "sparkle" octave layer for a fun, cheerful feel. */
-let actx=null, ambientOn=false, masterGain=null, melodyTimer=null;
-let noteIdx=4; // start mid-scale
-const SCALE=[261.63,293.66,329.63,392.00,440.00,523.25,587.33,659.25,783.99]; // C major pentatonic, two octaves
+   Real plucked-string ("pizzicato") recordings — CC0 public domain,
+   from Kenney Vleugels' "Music Jingles" pack (kenney.nl). Four individual
+   notes (A3, C4, D4, E4 — an A minor pentatonic fragment, so no dissonant
+   interval is possible) are played back in a bouncy random sequence.
+   See /audio/CREDITS.txt for full attribution. */
+let actx=null, ambientOn=false, masterGain=null, melodyTimer=null, buffersReady=false;
+let noteIdx=1;
+const NOTE_FILES=['audio/note-a3.mp3','audio/note-c4.mp3','audio/note-d4.mp3','audio/note-e4.mp3'];
+const NOTE_BUFFERS=[];
 
 function buildAmbientEngine(){
   actx = new (window.AudioContext||window.webkitAudioContext)();
@@ -1610,62 +1613,57 @@ function buildAmbientEngine(){
   masterGain.connect(actx.destination);
   // tiny, short slap-delay for sparkle — no long eerie feedback trail
   const delay = actx.createDelay(0.4);
-  delay.delayTime.value = 0.16;
+  delay.delayTime.value = 0.15;
   const delayGain = actx.createGain();
-  delayGain.gain.value = 0.16;
+  delayGain.gain.value = 0.14;
   masterGain.connect(delay);
   delay.connect(delayGain);
   delayGain.connect(actx.destination);
+  return Promise.all(NOTE_FILES.map(url =>
+    fetch(url).then(r=>r.arrayBuffer()).then(buf=>actx.decodeAudioData(buf))
+  )).then(buffers=>{ NOTE_BUFFERS.push(...buffers); buffersReady=true; });
 }
-function playNote(freq,time,dur,vol){
-  const osc=actx.createOscillator();
-  osc.type='triangle';
-  osc.frequency.value=freq;
+function playSample(buffer, time, vol, rate){
+  const src=actx.createBufferSource();
+  src.buffer=buffer;
+  src.playbackRate.value=rate||1;
   const g=actx.createGain();
-  g.gain.setValueAtTime(0,time);
-  g.gain.linearRampToValueAtTime(vol,time+0.012);
-  g.gain.exponentialRampToValueAtTime(0.0001,time+dur);
-  osc.connect(g); g.connect(masterGain);
-  osc.start(time); osc.stop(time+dur+0.05);
-  // occasional bright sparkle layer, an octave up
-  if(Math.random()<0.3){
-    const osc2=actx.createOscillator();
-    osc2.type='sine';
-    osc2.frequency.value=freq*2;
-    const g2=actx.createGain();
-    g2.gain.setValueAtTime(0,time);
-    g2.gain.linearRampToValueAtTime(vol*0.4,time+0.01);
-    g2.gain.exponentialRampToValueAtTime(0.0001,time+dur*0.55);
-    osc2.connect(g2); g2.connect(masterGain);
-    osc2.start(time); osc2.stop(time+dur*0.55+0.05);
-  }
+  g.gain.setValueAtTime(vol, time);
+  src.connect(g); g.connect(masterGain);
+  src.start(time);
 }
 function scheduleNextNote(){
-  if(!ambientOn) return;
-  // gentle random walk through the scale — always musically pleasant, never harsh
+  if(!ambientOn || !buffersReady) return;
+  // gentle random walk through the 4 notes — always musically pleasant, never harsh
   const step=Math.floor(Math.random()*3)-1; // -1, 0, or +1
-  noteIdx=Math.max(0,Math.min(SCALE.length-1, noteIdx+step));
-  const freq=SCALE[noteIdx];
-  const dur=0.5+Math.random()*0.3;
-  const vol=0.09+Math.random()*0.025;
-  playNote(freq, actx.currentTime+0.02, dur, vol);
-  const gap=270+Math.random()*150; // bouncy, slightly varied timing — a playful skip
+  noteIdx=Math.max(0,Math.min(NOTE_BUFFERS.length-1, noteIdx+step));
+  const vol=0.85+Math.random()*0.15;
+  // occasional octave-up sparkle via playbackRate (real sample, pitched up)
+  const sparkle=Math.random()<0.22;
+  playSample(NOTE_BUFFERS[noteIdx], actx.currentTime+0.02, vol, 1);
+  if(sparkle) playSample(NOTE_BUFFERS[noteIdx], actx.currentTime+0.04, vol*0.4, 2);
+  const gap=300+Math.random()*180; // bouncy, slightly varied timing — a playful skip
   melodyTimer=setTimeout(scheduleNextNote, gap);
 }
 function toggleAmbient(){
   const btn=document.getElementById('audioToggle');
   if(!ambientOn){
-    if(!actx) buildAmbientEngine();
-    if(actx.state==='suspended') actx.resume();
-    masterGain.gain.cancelScheduledValues(actx.currentTime);
-    masterGain.gain.linearRampToValueAtTime(1, actx.currentTime+0.8);
+    btn.classList.add('on'); // immediate feedback while loading
     ambientOn=true;
-    btn.classList.add('on');
     localStorage.setItem('soc-ambient','on');
-    scheduleNextNote();
+    const start=()=>{
+      if(actx.state==='suspended') actx.resume();
+      masterGain.gain.cancelScheduledValues(actx.currentTime);
+      masterGain.gain.linearRampToValueAtTime(1, actx.currentTime+0.6);
+      scheduleNextNote();
+    };
+    if(!actx) buildAmbientEngine().then(start);
+    else if(buffersReady) start();
   } else {
-    masterGain.gain.cancelScheduledValues(actx.currentTime);
-    masterGain.gain.linearRampToValueAtTime(0, actx.currentTime+0.6);
+    if(masterGain){
+      masterGain.gain.cancelScheduledValues(actx.currentTime);
+      masterGain.gain.linearRampToValueAtTime(0, actx.currentTime+0.5);
+    }
     ambientOn=false;
     btn.classList.remove('on');
     localStorage.setItem('soc-ambient','off');
