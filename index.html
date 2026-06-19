@@ -1595,57 +1595,99 @@ function submitPrayer(){
   document.getElementById('pwSuccess').style.display='block';
 }
 
-/* ── AMBIENT WORSHIP AUDIO (generative, no copyrighted material) ── */
-let actx=null, ambientNodes=[], ambientOn=false;
-function buildAmbientPad(){
+/* ── AMBIENT WORSHIP AUDIO ──
+   An original generative instrumental — NOT a recreation of any existing song.
+   Uses the classic I–V–vi–IV worship progression (D–A–Bm–G), a chord progression
+   that itself isn't copyrightable, with an original arpeggiated melody on top. */
+let actx=null, ambientOn=false;
+let padOscs=[], masterGain=null, delayNode=null, feedbackGain=null, wetGain=null;
+let chordIdx=0, chordInterval=null;
+const CHORDS=[
+  {pad:[146.83,185.00,220.00,293.66], melody:[293.66,369.99,440.00,587.33,440.00,369.99]},
+  {pad:[110.00,164.81,220.00,277.18], melody:[220.00,277.18,329.63,440.00,329.63,277.18]},
+  {pad:[123.47,146.83,185.00,246.94], melody:[246.94,293.66,369.99,493.88,369.99,293.66]},
+  {pad:[98.00,123.47,146.83,196.00],  melody:[196.00,246.94,293.66,392.00,293.66,246.94]}
+];
+const CHORD_DUR=7400;
+
+function buildAmbientEngine(){
   actx = new (window.AudioContext||window.webkitAudioContext)();
-  const master = actx.createGain();
-  master.gain.value = 0;
-  master.connect(actx.destination);
-  // Warm sustained chord — D major-ish pad with gentle motion (D3, A3, F#4, D4-ish overtone)
-  const freqs = [73.42, 110.00, 146.83, 185.00, 220.00];
-  freqs.forEach((f,i)=>{
-    const osc = actx.createOscillator();
-    osc.type = i%2===0 ? 'sine' : 'triangle';
-    osc.frequency.value = f;
-    const lfo = actx.createOscillator();
-    lfo.frequency.value = 0.06 + i*0.015;
-    const lfoGain = actx.createGain();
-    lfoGain.gain.value = 1.4;
-    lfo.connect(lfoGain);
-    lfoGain.connect(osc.frequency);
-    const g = actx.createGain();
-    g.gain.value = 0.05 - i*0.006;
-    const panner = actx.createStereoPanner ? actx.createStereoPanner() : null;
-    if(panner){ panner.pan.value = (i%2===0?-1:1)*0.3; osc.connect(g); g.connect(panner); panner.connect(master); }
-    else { osc.connect(g); g.connect(master); }
-    osc.start(); lfo.start();
-    ambientNodes.push(osc,lfo,g);
+  masterGain = actx.createGain();
+  masterGain.gain.value = 0;
+  masterGain.connect(actx.destination);
+  // Gentle cathedral-like delay/ambience
+  delayNode = actx.createDelay(2.0);
+  delayNode.delayTime.value = 0.46;
+  feedbackGain = actx.createGain();
+  feedbackGain.gain.value = 0.3;
+  wetGain = actx.createGain();
+  wetGain.gain.value = 0.45;
+  masterGain.connect(delayNode);
+  delayNode.connect(feedbackGain);
+  feedbackGain.connect(delayNode);
+  delayNode.connect(wetGain);
+  wetGain.connect(actx.destination);
+  // Sustained pad voices — glide smoothly between chord tones
+  CHORDS[0].pad.forEach((f,i)=>{
+    const osc=actx.createOscillator();
+    osc.type = i%2===0?'sine':'triangle';
+    osc.frequency.value=f;
+    const g=actx.createGain();
+    g.gain.value=0.055-i*0.007;
+    const panner=actx.createStereoPanner?actx.createStereoPanner():null;
+    if(panner){panner.pan.value=(i%2===0?-1:1)*0.35; osc.connect(g); g.connect(panner); panner.connect(masterGain);}
+    else{osc.connect(g); g.connect(masterGain);}
+    osc.start();
+    padOscs.push(osc);
   });
-  ambientNodes.push(master);
-  return master;
+}
+function advanceChord(){
+  chordIdx=(chordIdx+1)%CHORDS.length;
+  const chord=CHORDS[chordIdx];
+  padOscs.forEach((osc,i)=>{
+    osc.frequency.cancelScheduledValues(actx.currentTime);
+    osc.frequency.setValueAtTime(osc.frequency.value, actx.currentTime);
+    osc.frequency.linearRampToValueAtTime(chord.pad[i], actx.currentTime+3.4);
+  });
+}
+function playPluck(freq,time){
+  const osc=actx.createOscillator();
+  osc.type='triangle';
+  osc.frequency.value=freq;
+  const g=actx.createGain();
+  g.gain.setValueAtTime(0,time);
+  g.gain.linearRampToValueAtTime(0.085,time+0.05);
+  g.gain.exponentialRampToValueAtTime(0.0001,time+2.6);
+  osc.connect(g); g.connect(masterGain);
+  osc.start(time); osc.stop(time+2.7);
+}
+function scheduleMelody(){
+  const chord=CHORDS[chordIdx];
+  const gap=(CHORD_DUR/1000)/chord.melody.length;
+  chord.melody.forEach((f,i)=>playPluck(f, actx.currentTime + i*gap + 0.3));
 }
 function toggleAmbient(){
   const btn=document.getElementById('audioToggle');
   if(!ambientOn){
-    if(!actx) buildAmbientPad();
+    if(!actx) buildAmbientEngine();
     if(actx.state==='suspended') actx.resume();
-    const master = ambientNodes[ambientNodes.length-1];
-    master.gain.cancelScheduledValues(actx.currentTime);
-    master.gain.linearRampToValueAtTime(0.5, actx.currentTime + 2.2);
+    masterGain.gain.cancelScheduledValues(actx.currentTime);
+    masterGain.gain.linearRampToValueAtTime(0.55, actx.currentTime+2.4);
     ambientOn=true;
     btn.classList.add('on');
     localStorage.setItem('soc-ambient','on');
+    scheduleMelody();
+    chordInterval=setInterval(()=>{advanceChord();scheduleMelody();},CHORD_DUR);
   } else {
-    const master = ambientNodes[ambientNodes.length-1];
-    master.gain.cancelScheduledValues(actx.currentTime);
-    master.gain.linearRampToValueAtTime(0, actx.currentTime + 1.4);
+    masterGain.gain.cancelScheduledValues(actx.currentTime);
+    masterGain.gain.linearRampToValueAtTime(0, actx.currentTime+1.4);
     ambientOn=false;
     btn.classList.remove('on');
     localStorage.setItem('soc-ambient','off');
+    clearInterval(chordInterval);
   }
 }
-// Restore preference (note: browsers block autoplay until first interaction, so we wait for a tap anywhere)
+// Restore preference (browsers block autoplay until first interaction, so we wait for a tap anywhere)
 if(localStorage.getItem('soc-ambient')==='on'){
   const resumeOnce=()=>{ if(!ambientOn) toggleAmbient(); document.removeEventListener('click',resumeOnce); };
   document.addEventListener('click',resumeOnce,{once:true});
