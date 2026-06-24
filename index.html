@@ -1595,82 +1595,47 @@ function submitPrayer(){
   document.getElementById('pwSuccess').style.display='block';
 }
 
-/* ── PLAYFUL AMBIENT MELODY ──
-   Real plucked-string ("pizzicato") recordings — CC0 public domain,
-   from Kenney Vleugels' "Music Jingles" pack (kenney.nl). Four individual
-   notes (A3, C4, D4, E4 — an A minor pentatonic fragment, so no dissonant
-   interval is possible) are played back in a bouncy random sequence.
-   See /audio/CREDITS.txt for full attribution. */
-let actx=null, ambientOn=false, masterGain=null, melodyTimer=null, buffersReady=false;
-let noteIdx=1;
-const NOTE_FILES=['audio/note-a3.mp3','audio/note-c4.mp3','audio/note-d4.mp3','audio/note-e4.mp3'];
-const NOTE_BUFFERS=[];
+/* ── BACKGROUND WORSHIP MUSIC ──
+   "Amazing Grace" — public domain hymn (John Newton, 1779).
+   Recording by Tunetank (tunetank.com), royalty-free license. */
+let audioEl=null, ambientOn=false;
 
 function buildAmbientEngine(){
-  actx = new (window.AudioContext||window.webkitAudioContext)();
-  masterGain = actx.createGain();
-  masterGain.gain.value = 0;
-  masterGain.connect(actx.destination);
-  // tiny, short slap-delay for sparkle — no long eerie feedback trail
-  const delay = actx.createDelay(0.4);
-  delay.delayTime.value = 0.15;
-  const delayGain = actx.createGain();
-  delayGain.gain.value = 0.14;
-  masterGain.connect(delay);
-  delay.connect(delayGain);
-  delayGain.connect(actx.destination);
-  return Promise.all(NOTE_FILES.map(url =>
-    fetch(url).then(r=>r.arrayBuffer()).then(buf=>actx.decodeAudioData(buf))
-  )).then(buffers=>{ NOTE_BUFFERS.push(...buffers); buffersReady=true; });
+  audioEl = new Audio('audio/amazing-grace.mp3');
+  audioEl.loop = true;
+  audioEl.volume = 0;
+  audioEl.preload = 'none';
 }
-function playSample(buffer, time, vol, rate){
-  const src=actx.createBufferSource();
-  src.buffer=buffer;
-  src.playbackRate.value=rate||1;
-  const g=actx.createGain();
-  g.gain.setValueAtTime(vol, time);
-  src.connect(g); g.connect(masterGain);
-  src.start(time);
-}
-function scheduleNextNote(){
-  if(!ambientOn || !buffersReady) return;
-  // gentle random walk through the 4 notes — always musically pleasant, never harsh
-  const step=Math.floor(Math.random()*3)-1; // -1, 0, or +1
-  noteIdx=Math.max(0,Math.min(NOTE_BUFFERS.length-1, noteIdx+step));
-  const vol=0.85+Math.random()*0.15;
-  // occasional octave-up sparkle via playbackRate (real sample, pitched up)
-  const sparkle=Math.random()<0.22;
-  playSample(NOTE_BUFFERS[noteIdx], actx.currentTime+0.02, vol, 1);
-  if(sparkle) playSample(NOTE_BUFFERS[noteIdx], actx.currentTime+0.04, vol*0.4, 2);
-  const gap=300+Math.random()*180; // bouncy, slightly varied timing — a playful skip
-  melodyTimer=setTimeout(scheduleNextNote, gap);
+function fadeVolume(target, duration){
+  if(!audioEl) return;
+  const steps=40, interval=duration/steps;
+  const start=audioEl.volume, diff=target-start;
+  let i=0;
+  const t=setInterval(()=>{
+    i++;
+    audioEl.volume=Math.min(1,Math.max(0, start + diff*(i/steps)));
+    if(i>=steps) clearInterval(t);
+  }, interval);
 }
 function toggleAmbient(){
   const btn=document.getElementById('audioToggle');
   if(!ambientOn){
-    btn.classList.add('on'); // immediate feedback while loading
+    if(!audioEl) buildAmbientEngine();
+    audioEl.play().then(()=>{
+      fadeVolume(0.6, 1800);
+    }).catch(()=>{});
     ambientOn=true;
+    btn.classList.add('on');
     localStorage.setItem('soc-ambient','on');
-    const start=()=>{
-      if(actx.state==='suspended') actx.resume();
-      masterGain.gain.cancelScheduledValues(actx.currentTime);
-      masterGain.gain.linearRampToValueAtTime(1, actx.currentTime+0.6);
-      scheduleNextNote();
-    };
-    if(!actx) buildAmbientEngine().then(start);
-    else if(buffersReady) start();
   } else {
-    if(masterGain){
-      masterGain.gain.cancelScheduledValues(actx.currentTime);
-      masterGain.gain.linearRampToValueAtTime(0, actx.currentTime+0.5);
-    }
+    fadeVolume(0, 1200);
+    setTimeout(()=>{ if(audioEl) audioEl.pause(); }, 1300);
     ambientOn=false;
     btn.classList.remove('on');
     localStorage.setItem('soc-ambient','off');
-    clearTimeout(melodyTimer);
   }
 }
-// Restore preference (browsers block autoplay until first interaction, so we wait for a tap anywhere)
+// Restore preference on revisit (wait for first interaction — browser autoplay policy)
 if(localStorage.getItem('soc-ambient')==='on'){
   const resumeOnce=()=>{ if(!ambientOn) toggleAmbient(); document.removeEventListener('click',resumeOnce); };
   document.addEventListener('click',resumeOnce,{once:true});
