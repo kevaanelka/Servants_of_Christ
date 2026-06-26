@@ -1537,13 +1537,14 @@ document.addEventListener('keydown',e=>{
 
 /* ── NEXT GATHERING CONFIG (update this each week) ── */
 const NEXT_GATHERING = {
-  date: 'Sat, 21 Jun 2026',
+  date: 'Wed, 1 Jul 2026',
   city: 'Jakarta',
   venue: 'Eunoia, Permata Hijau',
+  time: '19.00 WIB',
 };
 (function(){
   const t = document.getElementById('ngText');
-  if(t) t.innerHTML = `<strong>${NEXT_GATHERING.date}</strong> &nbsp;·&nbsp; ${NEXT_GATHERING.city} &nbsp;·&nbsp; ${NEXT_GATHERING.venue}`;
+  if(t) t.innerHTML = `<strong>${NEXT_GATHERING.date}</strong> &nbsp;·&nbsp; ${NEXT_GATHERING.time} &nbsp;·&nbsp; ${NEXT_GATHERING.city} &nbsp;·&nbsp; ${NEXT_GATHERING.venue}`;
 })();
 
 /* ── VERSE OF THE DAY ── */
